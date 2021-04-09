@@ -8,6 +8,7 @@ public class SimulationManager : MonoBehaviour
     public GameObject person;
 
     public uint N;   // Number of people in simulation. Constrained to be even
+    public uint radius;
     [Range(1, 26)]
     public uint U;   // Unique qualities to choose from. Represented by letters. Cannot exceed 26.
     public uint Q;   // Qualities possessed by each person. Cannot exceed U.
@@ -59,8 +60,6 @@ public class SimulationManager : MonoBehaviour
 
     public void Populate()
     {
-        uint radius = 150;  // Might calculate at runtime later
-
         for (int i = 0; i < N; i++)
         {
             float angle = ((float)i / N) * (2 * Mathf.PI);
