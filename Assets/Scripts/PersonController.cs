@@ -98,10 +98,15 @@ public class PersonController : MonoBehaviour
         }
         
         float newWidth = Mathf.Max(requirementText.preferredWidth, dealbreakerText.preferredWidth) + fontMargin;
+        
+        float sizeRatio = (bodyImage.rectTransform.rect.width / 100f);
+        sizeRatio = Mathf.Max(sizeRatio, 0.4f);
+        infoImage.transform.localScale = new Vector3(sizeRatio, sizeRatio, 1f);
+
         float newHeight = infoImage.rectTransform.sizeDelta.y;
         infoImage.rectTransform.sizeDelta = new Vector2(newWidth, newHeight);
 
-        float info_y = (bodyRadius + newHeight / 2 + 5);
+        float info_y = (bodyRadius + (newHeight * sizeRatio) / 2 + 5);
         if(transform.localPosition.y > 0)
         {
             infoImage.transform.localPosition = new Vector2(0f, -1 * info_y);
@@ -109,7 +114,6 @@ public class PersonController : MonoBehaviour
         {
             infoImage.transform.localPosition = new Vector2(0f, info_y);
         }
-        
     }
 
     public void resizeQualities()
