@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 4482816730140897820}
   - component: {fileID: 4482816730140897810}
   - component: {fileID: 4482816730140897811}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Qualities
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -202,6 +202,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bodyImage: {fileID: 4482816729886328980}
   infoImage: {fileID: 2446766899037475873}
+  bodyRadius: 0
   qualitiesText: {fileID: 4482816730140897811}
   requirementText: {fileID: 0}
   dealbreakerText: {fileID: 0}
@@ -220,7 +221,7 @@ GameObject:
   - component: {fileID: 5452519157965510279}
   - component: {fileID: 5452519157965510277}
   - component: {fileID: 5452519157965510278}
-  m_Layer: 5
+  m_Layer: 2
   m_Name: Dealbreakers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -299,7 +300,7 @@ GameObject:
   - component: {fileID: 5452519158588163691}
   - component: {fileID: 5452519158588163689}
   - component: {fileID: 5452519158588163690}
-  m_Layer: 5
+  m_Layer: 2
   m_Name: Requirements
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -378,7 +379,7 @@ GameObject:
   - component: {fileID: 6285508720690379544}
   - component: {fileID: 4798039383777249680}
   - component: {fileID: 2446766899037475873}
-  m_Layer: 5
+  m_Layer: 2
   m_Name: Info Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}

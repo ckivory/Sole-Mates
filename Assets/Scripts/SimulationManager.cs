@@ -7,8 +7,10 @@ public class SimulationManager : MonoBehaviour
     public Canvas canvas;
     public GameObject person;
 
+    public uint radius;     // Radius of larger circle
+    public uint minDist;       // Minimum distance between people
+
     public uint N;   // Number of people in simulation. Constrained to be even
-    public uint radius;
     [Range(1, 26)]
     public uint U;   // Unique qualities to choose from. Represented by letters. Cannot exceed 26.
     public uint Q;   // Qualities possessed by each person. Cannot exceed U.
@@ -16,6 +18,8 @@ public class SimulationManager : MonoBehaviour
     public uint D;   // Dealbreakers per person. Cannot share qualities with R. R + D cannot exceed Q.
 
     public static char[] alphabet = new char[26] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+
+    private uint personNum = 0;
 
     // For now, just verify that qualities do not contradict. Eventually, allow player to choose qualities.
     public void Start()
@@ -26,7 +30,7 @@ public class SimulationManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Exiting.");
+            Debug.Log("Failed to run simulation.");
         }
     }
 
@@ -35,6 +39,11 @@ public class SimulationManager : MonoBehaviour
         if (N % 2 != 0)
         {
             Debug.Log("N must be an even number.");
+            return false;
+        }
+        else if (N < 2 || N > 32)
+        {
+            Debug.Log("N must be between 2 and 32 inclusive.");
             return false;
         }
         else if (U < 1 || U > 26)
@@ -60,27 +69,29 @@ public class SimulationManager : MonoBehaviour
 
     public void Populate()
     {
+        float pRad = ((float) radius * Mathf.Sin(Mathf.PI / N)) - ((float)minDist / 2);
         for (int i = 0; i < N; i++)
         {
             float angle = ((float)i / N) * (2 * Mathf.PI);
-            CreatePerson(new Vector2(Mathf.Sin(angle), Mathf.Cos(angle)) * radius);
+            CreatePerson(new Vector2(Mathf.Sin(angle), Mathf.Cos(angle)) * radius, (uint)Mathf.Min(pRad, 50f));
         }
     }
 
-    public void CreatePerson(Vector2 position)
+    public void CreatePerson(Vector2 position, uint personRadius)
     {
         GameObject newPerson = Instantiate(person);
+        newPerson.name = "Person " + ++personNum;
         newPerson.transform.SetParent(canvas.transform);
         newPerson.transform.localPosition = position;
+        newPerson.transform.localScale = new Vector3(1f, 1f, 1f);
 
         PersonController pc = newPerson.GetComponent<PersonController>();
 
+        pc.bodyRadius = personRadius;
         pc.bodyColor = randomSaturatedColor();
         pc.qualities = randomQualities();
         pc.requirements = randomRequirements();
-        Debug.Log("Requirements: " + string.Join(",", pc.requirements.ToArray()));
         pc.dealbreakers = randomDealbreakers(pc.requirements);
-        Debug.Log("Dealbreakers: " + string.Join(",", pc.dealbreakers.ToArray()));
         pc.InitializePerson();
     }
 

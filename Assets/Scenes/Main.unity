@@ -220,8 +220,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 883785385}
   person: {fileID: 4482816731548461452, guid: 7455757c49fc70341b4ae4b153bf9168, type: 3}
-  N: 12
   radius: 150
+  minDist: 5
+  N: 32
   U: 26
   Q: 13
   R: 13
@@ -252,6 +253,7 @@ GameObject:
   - component: {fileID: 883785385}
   - component: {fileID: 883785384}
   - component: {fileID: 883785383}
+  - component: {fileID: 883785387}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -339,6 +341,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &883785387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883785382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba45b1af232c89c4ea0fa2f922019d04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2123869243
 GameObject:
   m_ObjectHideFlags: 0

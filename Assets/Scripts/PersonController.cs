@@ -2,15 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
-public class PersonController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class PersonController : MonoBehaviour
 {
     public static int maxFontSize = 40;
     public static int fontMargin = 16;
 
     public Image bodyImage;
     public Image infoImage;
+
+    [HideInInspector]
+    public uint bodyRadius;
 
     [HideInInspector]
     public Text qualitiesText;
@@ -25,11 +27,15 @@ public class PersonController : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public List<char> requirements;
     public List<char> dealbreakers;
 
+    public static List<PersonController> people = new List<PersonController>();
+
     public void InitializePerson()
     {
+        bodyImage.rectTransform.sizeDelta = new Vector2(bodyRadius * 2, bodyRadius * 2);
         InitializeText();
         InitializeColor();
         infoImage.gameObject.SetActive(false);
+        people.Add(this);
     }
 
     public void InitializeText()
@@ -61,6 +67,20 @@ public class PersonController : MonoBehaviour, IPointerEnterHandler, IPointerExi
         }
     }
 
+    public static void HideAllInfoBoxes()
+    {
+        foreach(PersonController person in people)
+        {
+            person.infoImage.gameObject.SetActive(false);
+        }
+    }
+
+    public void ShowInfoBox()
+    {
+        transform.SetAsLastSibling();
+        infoImage.gameObject.SetActive(true);
+    }
+
     public void updateInfoBox()
     {
         updateText(requirementText, requirements);
@@ -77,30 +97,29 @@ public class PersonController : MonoBehaviour, IPointerEnterHandler, IPointerExi
             requirementText.transform.localPosition = Vector2.zero;
         }
         
-        float newWidth = Mathf.Max(requirementText.preferredWidth, dealbreakerText.preferredWidth) + 16;
-        infoImage.rectTransform.sizeDelta = new Vector2(newWidth, infoImage.rectTransform.sizeDelta.y);
+        float newWidth = Mathf.Max(requirementText.preferredWidth, dealbreakerText.preferredWidth) + fontMargin;
+        float newHeight = infoImage.rectTransform.sizeDelta.y;
+        infoImage.rectTransform.sizeDelta = new Vector2(newWidth, newHeight);
+
+        float info_y = (bodyRadius + newHeight / 2 + 5);
+        if(transform.localPosition.y > 0)
+        {
+            infoImage.transform.localPosition = new Vector2(0f, -1 * info_y);
+        } else
+        {
+            infoImage.transform.localPosition = new Vector2(0f, info_y);
+        }
+        
     }
 
     public void resizeQualities()
     {
+        uint inscribed = (uint)(bodyRadius * Mathf.Sqrt(2));
+        qualitiesText.rectTransform.sizeDelta = new Vector2(inscribed, inscribed);
         qualitiesText.fontSize = maxFontSize;
         while(qualitiesText.preferredHeight > qualitiesText.rectTransform.rect.height)
         {
             qualitiesText.fontSize -= 1;
         }
-    }
-
-    // Figure out how to make it only work when you hover over the body, not any other part. Maybe attach a script to the body itself.
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        Debug.Log("Entering");
-        transform.SetAsLastSibling();
-        infoImage.gameObject.SetActive(true);
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        Debug.Log("Exiting");
-        infoImage.gameObject.SetActive(false);
     }
 }
