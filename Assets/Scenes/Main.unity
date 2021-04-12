@@ -223,10 +223,10 @@ MonoBehaviour:
   radius: 150
   minDist: 5
   N: 32
-  U: 26
-  Q: 13
-  R: 13
-  D: 13
+  U: 5
+  Q: 1
+  R: 1
+  D: 1
 --- !u!4 &690608095
 Transform:
   m_ObjectHideFlags: 0

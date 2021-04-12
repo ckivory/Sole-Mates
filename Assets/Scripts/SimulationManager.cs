@@ -27,10 +27,17 @@ public class SimulationManager : MonoBehaviour
         if (Verify())
         {
             Populate();
+            Match();    // Optional: Let player form matches with the goal of maximizing average fitness or number of perfect matches.
+
+            float average;
+            int perfectMatches;
+            CalculateStats(out average, out perfectMatches);
+            Debug.Log("Average fitness: " + average);
+            Debug.Log("Perfect Matches: " + perfectMatches);
         }
         else
         {
-            Debug.Log("Failed to run simulation.");
+            Debug.LogError("Failed to run simulation.");
         }
     }
 
@@ -75,6 +82,63 @@ public class SimulationManager : MonoBehaviour
             float angle = ((float)i / N) * (2 * Mathf.PI);
             CreatePerson(new Vector2(Mathf.Sin(angle), Mathf.Cos(angle)) * radius, (uint)Mathf.Min(pRad, 50f));
         }
+    }
+
+    public void Match()
+    {
+        
+        List<PersonController> singles = new List<PersonController>();
+        foreach (PersonController person in PersonController.people)
+        {
+            singles.Add(person);
+        }
+
+        while (singles.Count > 0)
+        {
+            int hottest = 0;
+            for (int personIndex = 0; personIndex < singles.Count; personIndex++)
+            {
+                PersonController person = singles[personIndex];
+                person.desirability = 0f;
+                foreach (PersonController suitor in singles)
+                {
+                    if (suitor != person)
+                    {
+                        person.desirability += suitor.MateFitness(person);
+                    }
+                }
+                person.desirability /= (singles.Count - 1);
+                if (person.desirability > singles[hottest].desirability)
+                {
+                    hottest = personIndex;
+                }
+            }
+            PersonController nextMate = singles[hottest];
+            singles.RemoveAt(hottest);
+            nextMate.BestMatch(singles);
+            singles.Remove(nextMate.mate);
+        }
+    }
+
+    public void CalculateStats(out float average, out int perfects)
+    {
+        average = 0;
+        perfects = 0;
+        foreach (PersonController person in PersonController.people)
+        {
+            if (person.mate == null)
+            {
+                Debug.LogError("Unmated person!");
+                return;
+            }
+            float fitness = person.MatchFitness(person.mate);
+            if(fitness > 0.999f)
+            {
+                perfects += 1;
+            }
+            average += fitness;
+        }
+        average /= PersonController.people.Count;
     }
 
     public void CreatePerson(Vector2 position, uint personRadius)
@@ -137,7 +201,7 @@ public class SimulationManager : MonoBehaviour
     {
         if (total > U - exclude.Count)
         {
-            Debug.Log("Attempting to select too many qualities");
+            Debug.LogError("Attempting to select too many qualities");
             return new List<char>();
         }
 

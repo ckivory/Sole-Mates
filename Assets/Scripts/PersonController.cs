@@ -29,13 +29,63 @@ public class PersonController : MonoBehaviour
 
     public static List<PersonController> people = new List<PersonController>();
 
+    [HideInInspector]
+    public PersonController mate;
+    [HideInInspector]
+    public float desirability;
+
     public void InitializePerson()
     {
         bodyImage.rectTransform.sizeDelta = new Vector2(bodyRadius * 2, bodyRadius * 2);
         InitializeText();
         InitializeColor();
         infoImage.gameObject.SetActive(false);
+        mate = null;
+        desirability = 0;
         people.Add(this);
+    }
+
+    public float MateFitness(PersonController candidate)
+    {
+        float fitness = 0f;
+
+        foreach(char req in requirements)
+        {
+            if (candidate.qualities.Contains(req))
+            {
+                fitness += 1;
+            }
+        }
+        foreach(char db in dealbreakers)
+        {
+            if (!candidate.qualities.Contains(db))
+            {
+                fitness += 1;
+            }
+        }
+
+        fitness /= (requirements.Count + dealbreakers.Count);
+
+        return fitness;
+    }
+
+    public float MatchFitness(PersonController candidate)
+    {
+        return (this.MateFitness(candidate) + candidate.MateFitness(this)) / 2;
+    }
+
+    public void BestMatch(List<PersonController> options)
+    {
+        int best = 0;
+        for(int matchIndex = 0; matchIndex < options.Count; matchIndex++)
+        {
+            if(MatchFitness(options[matchIndex]) > MatchFitness(options[best]))
+            {
+                best = matchIndex;
+            }
+        }
+        mate = options[best];
+        options[best].mate = this;
     }
 
     public void InitializeText()
